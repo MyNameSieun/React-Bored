@@ -3,15 +3,16 @@ import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { sortByDate } from 'utils/sortUtils';
 
 const PostListPage = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sortOrder, setSortOrder] = useState('desc');
   const navigate = useNavigate();
 
   // HTML 태그 제거 및 엔터티 변환 함수
   const convertHtmlEntities = (htmlString) => {
-    // HTML 엔터티를 텍스트로 변환
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlString, 'text/html');
     return doc.body.textContent || '';
@@ -21,7 +22,8 @@ const PostListPage = () => {
     const loadPosts = async () => {
       try {
         const response = await fetchPosts();
-        setPosts(response.data);
+        const sortedPosts = sortByDate(response.data, sortOrder); // 게시글 정렬
+        setPosts(sortedPosts);
       } catch (error) {
         console.error(error);
         alert(error.response.data);
@@ -30,7 +32,7 @@ const PostListPage = () => {
       }
     };
     loadPosts();
-  }, []);
+  }, [sortOrder]); // sortOrder가 변경될 때 게시글을 다시 정렬
 
   if (loading) {
     return <p>로딩 중...</p>;
@@ -38,6 +40,8 @@ const PostListPage = () => {
 
   return (
     <div>
+      <button onClick={() => setSortOrder('asc')}>오름차순</button>
+      <button onClick={() => setSortOrder('desc')}>내림차순</button>
       {posts.length > 0 ? (
         <ul>
           {posts.map((post) => {
