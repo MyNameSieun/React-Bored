@@ -23,6 +23,7 @@ const PostListPage = () => {
         setPosts(response.data);
       } catch (error) {
         console.error(error);
+        alert(error.response.data);
       } finally {
         setLoading(false);
       }
@@ -43,8 +44,10 @@ const PostListPage = () => {
             return (
               <StPostItem key={post.id} onClick={() => navigate(`/posts/${post.id}`)}>
                 <h3>제목: {post.title}</h3>
-                <p>{textContent}</p> {/* HTML 엔터티가 변환된 내용 표시 */}
+                <p>내용: {textContent}</p> {/* HTML 엔터티가 변환된 내용 표시 */}
                 <p>작성일: {post.createdAt}</p>
+                <p>작성자: {post.author.nickname}</p>
+                <p>댓글 수: {post.comments.length}</p>
               </StPostItem>
             );
           })}

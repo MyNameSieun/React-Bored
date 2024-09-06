@@ -13,8 +13,7 @@ const PostFormPage = () => {
     e.preventDefault();
 
     if (!title || !content) {
-      alert('제목과 내용을 모두 입력해 주세요.');
-      return;
+      return alert('제목과 내용을 모두 입력해 주세요.');
     }
 
     try {
@@ -22,7 +21,9 @@ const PostFormPage = () => {
       alert('게시물 작성이 완료되었습니다!');
       navigate('/post-list');
     } catch (error) {
-      console.error('Error creating post:', error);
+      const message = error.response?.data || '게시물 작성 중 오류가 발생했습니다.';
+      console.error(message);
+      alert(message);
     }
   };
 
