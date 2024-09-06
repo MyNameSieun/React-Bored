@@ -18,6 +18,12 @@ const PostListPage = () => {
     return doc.body.textContent || '';
   };
 
+  // 정렬 순서 변경 핸들러
+  const onChangeSortOrder = (e) => {
+    const newSortOrder = e.target.value;
+    setSortOrder(newSortOrder);
+  };
+
   useEffect(() => {
     const loadPosts = async () => {
       try {
@@ -40,8 +46,11 @@ const PostListPage = () => {
 
   return (
     <div>
-      <button onClick={() => setSortOrder('asc')}>오름차순</button>
-      <button onClick={() => setSortOrder('desc')}>내림차순</button>
+      <select value={sortOrder} onChange={onChangeSortOrder}>
+        <option value="asc">오름차순</option>
+        <option value="desc">내림차순</option>
+      </select>
+
       {posts.length > 0 ? (
         <ul>
           {posts.map((post) => {
