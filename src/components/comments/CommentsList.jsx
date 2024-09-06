@@ -2,6 +2,7 @@ import { deleteComment, fetchComments, updateComment } from 'api/comments';
 import { useEffect, useState } from 'react';
 import CommentReply from './CommentReply';
 import { useAuth } from 'context/AuthContext';
+import dayjs from 'dayjs';
 
 const CommentsList = ({ id, handleCommentUpdate }) => {
   const [comments, setComments] = useState([]);
@@ -88,7 +89,7 @@ const CommentsList = ({ id, handleCommentUpdate }) => {
           ) : (
             <>
               <p>{comment.content}</p>
-              <p>{comment.createdAt}</p>
+              <p>{dayjs(comment.createdAt).format('YYYY/MM/DD')}</p>
               <p>{comment.author.nickname}</p>
               {user && user.id === comment.author.id && (
                 <>

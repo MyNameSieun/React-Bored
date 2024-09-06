@@ -10,6 +10,7 @@ import TextEditor from 'components/TextEditor';
 import CommentsList from 'components/comments/CommentsList';
 import CommentForm from 'components/comments/CommentForm';
 import { useAuth } from 'context/AuthContext';
+import dayjs from 'dayjs';
 
 const PostDetailPage = () => {
   const [post, setPost] = useState(null);
@@ -121,7 +122,7 @@ const PostDetailPage = () => {
                   __html: DOMPurify.sanitize(post.content)
                 }}
               />
-              <li>작성일: {post.createdAt}</li>
+              <li>작성일: {dayjs(post.createdAt).format('YYYY/MM/DD')}</li>
               <p>작성자: {post.author.nickname}</p>
 
               <p onClick={() => navigate(`/user-profile/${post.author.id}`)}>

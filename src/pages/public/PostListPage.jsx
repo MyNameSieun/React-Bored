@@ -1,4 +1,5 @@
 import { fetchPosts } from 'api/posts';
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -45,7 +46,7 @@ const PostListPage = () => {
               <StPostItem key={post.id} onClick={() => navigate(`/posts/${post.id}`)}>
                 <h3>제목: {post.title}</h3>
                 <p>내용: {textContent}</p> {/* HTML 엔터티가 변환된 내용 표시 */}
-                <p>작성일: {post.createdAt}</p>
+                <p>작성일: {dayjs(post.createdAt).format('YYYY/MM/DD')}</p>
                 <p>작성자: {post.author.nickname}</p>
                 <p>댓글 수: {post.comments.length}</p>
               </StPostItem>
