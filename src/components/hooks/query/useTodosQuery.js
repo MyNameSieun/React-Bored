@@ -43,20 +43,16 @@ export const useRepliesQuery = (commentId) => {
 };
 
 // 프로필 조회
-export const useProfileQuery = (setUser) => {
+export const useProfileQuery = () => {
   return useQuery({
-    queryKey: [QUERY_KEYS.PROFILE],
+    queryKey: ['profile'],
     queryFn: getProfile,
-    onSuccess: (data) => {
-      setUser(data.member); // 사용자 상태 업데이트
-    },
+    select: (data) => data.member,
     onError: (error) => {
-      console.error(error);
-      setUser(null); // 오류 발생 시 사용자 상태를 null로 설정
+      console.error('Error fetching profile:', error);
     }
   });
 };
-
 // 타 사용자 프로필 조회
 export const useMemberProfileQuery = (id) => {
   return useQuery({
