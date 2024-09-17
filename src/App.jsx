@@ -1,11 +1,16 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from 'context/AuthContext';
 import Router from 'shared/Router';
 
+const queryClient = new QueryClient();
+
 const App = () => {
   return (
-    <AuthProvider>
-      <Router />
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <Router />
+      </AuthProvider>
+    </QueryClientProvider>
   );
 };
 

@@ -1,4 +1,25 @@
-const CommentsReplyList = ({ replies }) => {
+import { useQuery } from '@tanstack/react-query';
+import { fetchReplies } from 'api/comments';
+
+const CommentsReplyList = ({ commentId }) => {
+  // 답글 로드
+  const {
+    data: replies = [],
+    isLoading,
+    error
+  } = useQuery({
+    queryKey: ['replies', commentId],
+    queryFn: () => fetchReplies(commentId)
+  });
+
+  if (isLoading) {
+    return <p>로딩중...</p>;
+  }
+
+  if (error) {
+    return <p>에러 발생: {error.message}</p>;
+  }
+
   return (
     <ul>
       {replies.map((reply) => (

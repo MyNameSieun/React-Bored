@@ -20,12 +20,14 @@ export const createPost = async (data) => {
 
 // 게시글 목록 조회
 export const fetchPosts = async () => {
-  return await postsAxios.get(`/posts`);
+  const response = await postsAxios.get(`/posts`);
+  return response.data;
 };
 
 // 특정 게시글 조회
 export const fetchPostById = async (id) => {
-  return await postsAxios.get(`/posts/${id}`);
+  const response = await postsAxios.get(`/posts/${id}`);
+  return response.data;
 };
 
 // 게시글 삭제

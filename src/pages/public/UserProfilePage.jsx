@@ -1,47 +1,40 @@
+import { useQuery } from '@tanstack/react-query';
 import { getMembersProfile } from 'api/auth';
-import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const UserProfilePage = () => {
   const { id } = useParams();
-  const [memberProfile, setMemberProfile] = useState(null);
-  const [memberProfilePosts, setMemberProfilePosts] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const loadMemberProfile = async () => {
-      const response = await getMembersProfile(id);
-      setMemberProfile(response.data.member);
-      setMemberProfilePosts(response.data.posts);
+  const { data, error, isLoading, isError } = useQuery({
+    queryKey: ['memberProfile', id],
+    queryFn: () => getMembersProfile(id),
+    onSuccess: (data) => {
+      console.log('데이터가 성공적으로 가져와졌습니다:', data);
+    },
+    onError: (error) => {
+      console.error('프로필을 불러오는 중 오류가 발생했습니다:', error);
+    }
+  });
 
-      try {
-      } catch (error) {
-        const message = error.response?.data || '프로필을 불러오는 중 오류가 발생했습니다.';
-        console.error(message);
-        alert(message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadMemberProfile();
-  }, [id]);
+  if (isLoading) return <p>로딩 중...</p>;
+  if (isError) return <p>오류 발생: {error.message}</p>;
+  if (!data) return <p>회원 프로필을 찾을 수 없습니다.</p>;
 
-  if (loading) return <p>로딩 중...</p>;
-  if (!memberProfile) return <p>회원 프로필을 찾을 수 없습니다.</p>;
+  const { member, posts } = data;
 
   return (
     <div>
-      <h1>{memberProfile.nickname}님의 프로필</h1>
-      <p>이름: {memberProfile.name}</p>
-      <p>닉네임: {memberProfile.name}</p>
+      <h1>{member.nickname}님의 프로필</h1>
+      <p>이름: {member.name}</p>
+      <p>닉네임: {member.name}</p>
       <h2>작성한 글 목록</h2>
-      {memberProfilePosts.length > 0 ? (
+      {posts.length > 0 ? (
         <ul>
-          {memberProfilePosts.map((memberProfilePost) => (
-            <li key={memberProfilePost.id} onClick={() => navigate(`/posts/${memberProfilePost.id}`)}>
-              <p>{memberProfilePost.title}</p>
+          {posts.map((post) => (
+            <li key={post.id} onClick={() => navigate(`/posts/${post.id}`)}>
+              <p>{post.title}</p>
             </li>
           ))}
         </ul>

@@ -22,7 +22,8 @@ export const deleteComment = async (postId, commentId) => {
 
 // 댓글 조회
 export const fetchComments = async (postId) => {
-  return await commentsAxios.get(`/posts/${postId}/comments`);
+  const response = await commentsAxios.get(`/posts/${postId}/comments`);
+  return response.data;
 };
 
 // 댓글에 답글 작성
@@ -32,5 +33,6 @@ export const createReply = async (parentId, content) => {
 
 // 댓글에 답글 조회
 export const fetchReplies = async (parentId) => {
-  return await commentsAxios.get(`/comments/${parentId}/replies`);
+  const response = await commentsAxios.get(`/comments/${parentId}/replies`);
+  return response.data;
 };

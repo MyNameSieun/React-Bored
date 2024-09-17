@@ -1,13 +1,12 @@
+import { useQuery } from '@tanstack/react-query';
 import { fetchPosts } from 'api/posts';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { sortByDate } from 'utils/sortUtils';
 
 const PostListPage = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState('desc');
   const navigate = useNavigate();
 
@@ -24,24 +23,29 @@ const PostListPage = () => {
     setSortOrder(newSortOrder);
   };
 
-  useEffect(() => {
-    const loadPosts = async () => {
-      try {
-        const response = await fetchPosts();
-        const sortedPosts = sortByDate(response.data, sortOrder); // 게시글 정렬
-        setPosts(sortedPosts);
-      } catch (error) {
-        console.error(error);
-        alert(error.response.data);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadPosts();
-  }, [sortOrder]); // sortOrder가 변경될 때 게시글을 다시 정렬
+  const {
+    data: posts = [],
+    isLoading,
+    error
+  } = useQuery({
+    queryKey: ['posts', sortOrder],
+    queryFn: async () => {
+      const data = await fetchPosts();
+      return sortByDate(data, sortOrder); // 데이터를 받아온 후 정렬
+    },
 
-  if (loading) {
-    return <p>로딩 중...</p>;
+    onError: (error) => {
+      console.error(error);
+      alert(error.response.data);
+    }
+  });
+
+  if (isLoading) {
+    return <p>로딩중...</p>;
+  }
+
+  if (error) {
+    return <p>에러 발생: {error.message}</p>;
   }
 
   return (

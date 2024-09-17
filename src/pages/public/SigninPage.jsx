@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query';
 import { login } from 'api/auth';
 import { useAuth } from 'context/AuthContext';
 import { useState } from 'react';
@@ -11,19 +12,23 @@ const SigninPage = () => {
   const navigate = useNavigate();
   const { setUser } = useAuth();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const response = await login({ email, password1 });
+  const loginMutation = useMutation({
+    mutationFn: login,
+    onSuccess: (response) => {
       alert('로그인이 완료되었습니다.');
       setUser(response.data); // 로그인 성공 후 사용자 정보 업데이트
       navigate('/');
-    } catch (error) {
-      const massage = error.response.data;
-      console.log(massage); // 개발자 확인
-      setError(massage); // 사용자 확인
+    },
+    onError: (error) => {
+      const message = error.response?.data || '로그인 중 오류가 발생했습니다.';
+      setError(message); // 사용자에게 오류 메시지 표시
     }
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    loginMutation.mutate({ email, password1 });
   };
 
   return (

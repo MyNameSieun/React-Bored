@@ -56,5 +56,6 @@ export const updateNickname = async (newNickname) => {
 
 // 타 사용자 프로필 조회
 export const getMembersProfile = async (memberId) => {
-  return await authAxios.get(`/members/${memberId}/profile`);
+  const response = await authAxios.get(`/members/${memberId}/profile`);
+  return response.data;
 };

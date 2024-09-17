@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query';
 import { register } from 'api/auth';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -11,21 +12,28 @@ const SignupPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (password1 !== password2) {
-      setError('비밀번호가 일치하지 않습니다.');
-      return;
-    }
-    try {
-      await register({ name, nickname, email, password1, password2 });
+  const registerMutation = useMutation({
+    mutationFn: register,
+    onSuccess: () => {
       alert('회원 가입이 완료되었습니다.');
       navigate('/sign-in'); // 회원 가입 성공 후 로그인 페이지로 리다이렉트
-    } catch (error) {
+    },
+    onError: (error) => {
       const message = error.response.data;
       setError(message || '회원가입 중 문제가 발생했습니다.'); // 사용자 확인
       console.log(message); // 개발자 확인
     }
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (password1 !== password2) {
+      setError('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+
+    registerMutation.mutate({ name, nickname, email, password1, password2 });
   };
 
   return (
