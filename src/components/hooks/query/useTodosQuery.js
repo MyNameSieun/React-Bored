@@ -45,7 +45,7 @@ export const useRepliesQuery = (commentId) => {
 // 프로필 조회
 export const useProfileQuery = () => {
   return useQuery({
-    queryKey: ['profile'],
+    queryKey: [QUERY_KEYS.PROFILE],
     queryFn: getProfile
   });
 };
