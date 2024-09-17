@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createReply } from 'api/comments';
+import { QUERY_KEYS } from 'components/hooks/query/key';
 import { useState } from 'react';
 
 const CommentsReplyForm = ({ commentId }) => {
@@ -10,7 +11,7 @@ const CommentsReplyForm = ({ commentId }) => {
   const addReplyMutation = useMutation({
     mutationFn: ({ commentId, replyContent }) => createReply(commentId, replyContent),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['replies'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.REPLIES] });
       alert('답글 작성이 완료되었습니다.');
       setReplyContent('');
     },

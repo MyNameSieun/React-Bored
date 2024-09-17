@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchPosts } from 'api/posts';
+import { QUERY_KEYS } from 'components/hooks/query/key';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -28,7 +29,7 @@ const PostListPage = () => {
     isLoading,
     error
   } = useQuery({
-    queryKey: ['posts', sortOrder],
+    queryKey: [QUERY_KEYS.POST, sortOrder],
     queryFn: async () => {
       const data = await fetchPosts();
       return sortByDate(data, sortOrder); // 데이터를 받아온 후 정렬

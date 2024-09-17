@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { writeComment } from 'api/comments';
+import { QUERY_KEYS } from 'components/hooks/query/key';
 import { useState } from 'react';
 
 const CommentForm = ({ id }) => {
@@ -10,7 +11,7 @@ const CommentForm = ({ id }) => {
   const addCommentMutation = useMutation({
     mutationFn: () => writeComment(id, content),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['comments'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.COMMENTS] });
       alert('댓글 추가 완료!');
       setContent('');
     },

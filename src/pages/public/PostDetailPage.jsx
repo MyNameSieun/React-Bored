@@ -1,5 +1,5 @@
 import { deletePost, fetchPostById, updatePost } from 'api/posts';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import 'react-quill/dist/quill.snow.css';
@@ -12,6 +12,7 @@ import CommentForm from 'components/comments/CommentForm';
 import { useAuth } from 'context/AuthContext';
 import dayjs from 'dayjs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { QUERY_KEYS } from 'components/hooks/query/key';
 
 const PostDetailPage = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -27,7 +28,7 @@ const PostDetailPage = () => {
   const deletePostMutation = useMutation({
     mutationFn: () => deletePost(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.POST] });
       alert('삭제 완료!');
       navigate('/post-list', { replace: true });
     },
@@ -48,7 +49,7 @@ const PostDetailPage = () => {
   const editPostMutation = useMutation({
     mutationFn: () => updatePost(id, { title, content }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.POST] });
       setIsEditing(false);
       alert('게시글이 수정되었습니다.');
     },
@@ -69,15 +70,19 @@ const PostDetailPage = () => {
     isLoading,
     error
   } = useQuery({
-    queryKey: ['post'],
+    queryKey: [QUERY_KEYS.POST],
     queryFn: () => fetchPostById(id)
   });
+
+  useEffect(() => {
+    setTitle(post.title);
+    setContent(post.content);
+  }, [post]);
 
   if (isLoading) {
     return <p>로딩중...</p>;
   }
 
-  // 에러 중 처리
   if (error) {
     return <p>에러 발생: {error.message}</p>;
   }

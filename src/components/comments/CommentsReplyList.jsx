@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchReplies } from 'api/comments';
+import { QUERY_KEYS } from 'components/hooks/query/key';
 
 const CommentsReplyList = ({ commentId }) => {
   // 답글 로드
@@ -8,7 +9,7 @@ const CommentsReplyList = ({ commentId }) => {
     isLoading,
     error
   } = useQuery({
-    queryKey: ['replies', commentId],
+    queryKey: [QUERY_KEYS.REPLIES, commentId],
     queryFn: () => fetchReplies(commentId)
   });
 

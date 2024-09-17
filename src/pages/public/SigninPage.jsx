@@ -41,7 +41,7 @@ const SigninPage = () => {
         </div>
         <div>
           <label htmlFor="password1">비밀번호</label>
-          <input type="password1" id="password1" value={password1} onChange={(e) => setPassword1(e.target.value)} />
+          <input type="password" id="password1" value={password1} onChange={(e) => setPassword1(e.target.value)} />
         </div>
         {error && <p style={{ color: 'red' }}>{error}</p>}
         <button type="submit">로그인</button>

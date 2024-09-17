@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getMembersProfile } from 'api/auth';
+import { QUERY_KEYS } from 'components/hooks/query/key';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const UserProfilePage = () => {
@@ -8,7 +9,7 @@ const UserProfilePage = () => {
   const navigate = useNavigate();
 
   const { data, error, isLoading, isError } = useQuery({
-    queryKey: ['memberProfile', id],
+    queryKey: [QUERY_KEYS.MEMBERPROFILE, id],
     queryFn: () => getMembersProfile(id),
     onSuccess: (data) => {
       console.log('데이터가 성공적으로 가져와졌습니다:', data);

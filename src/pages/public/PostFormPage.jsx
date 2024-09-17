@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createPost } from 'api/posts';
+import { QUERY_KEYS } from 'components/hooks/query/key';
 import TextEditor from 'components/TextEditor';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -14,7 +15,7 @@ const PostFormPage = () => {
   const addTodoMutation = useMutation({
     mutationFn: createPost,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.POST] });
       alert('게시물 작성이 완료되었습니다!');
       navigate('/post-list');
     },

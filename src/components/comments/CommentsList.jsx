@@ -4,6 +4,7 @@ import CommentReply from './CommentReply';
 import { useAuth } from 'context/AuthContext';
 import dayjs from 'dayjs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { QUERY_KEYS } from 'components/hooks/query/key';
 
 const CommentsList = ({ id }) => {
   const [editMode, setEditMode] = useState(null);
@@ -15,7 +16,7 @@ const CommentsList = ({ id }) => {
   const deleteCommentMutation = useMutation({
     mutationFn: ({ id, commentId }) => deleteComment(id, commentId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['comments'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.COMMENTS] });
       alert('삭제 되었습니다.');
     },
     onError: (error) => {
@@ -42,7 +43,7 @@ const CommentsList = ({ id }) => {
   const editCommentMutation = useMutation({
     mutationFn: ({ id, commentId, editContent }) => updateComment(id, commentId, editContent),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['comments'] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.COMMENTS] });
       setEditMode(null);
       alert('수정되었습니다.');
     },
@@ -63,7 +64,7 @@ const CommentsList = ({ id }) => {
     isLoading,
     error
   } = useQuery({
-    queryKey: ['comments', id],
+    queryKey: [QUERY_KEYS.COMMENTS, id],
     queryFn: () => fetchComments(id),
     onSuccess: (data) => {
       console.log('데이터가 성공적으로 가져와졌습니다:', data);
