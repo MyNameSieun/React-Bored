@@ -12,7 +12,7 @@ import CommentForm from 'components/comments/CommentForm';
 import { useAuth } from 'context/AuthContext';
 import dayjs from 'dayjs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { QUERY_KEYS } from 'components/hooks/query/key';
+import { QUERY_KEYS } from 'components/hooks/query/keys.constant';
 
 const PostDetailPage = () => {
   const [isEditing, setIsEditing] = useState(false);

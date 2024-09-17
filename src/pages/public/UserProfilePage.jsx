@@ -1,6 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
-import { getMembersProfile } from 'api/auth';
-import { QUERY_KEYS } from 'components/hooks/query/key';
+import { useMemberProfileQuery } from 'components/hooks/query/useTodosQuery';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const UserProfilePage = () => {
@@ -8,16 +6,7 @@ const UserProfilePage = () => {
 
   const navigate = useNavigate();
 
-  const { data, error, isLoading, isError } = useQuery({
-    queryKey: [QUERY_KEYS.MEMBERPROFILE, id],
-    queryFn: () => getMembersProfile(id),
-    onSuccess: (data) => {
-      console.log('데이터가 성공적으로 가져와졌습니다:', data);
-    },
-    onError: (error) => {
-      console.error('프로필을 불러오는 중 오류가 발생했습니다:', error);
-    }
-  });
+  const { data, error, isLoading, isError } = useMemberProfileQuery(id);
 
   if (isLoading) return <p>로딩 중...</p>;
   if (isError) return <p>오류 발생: {error.message}</p>;

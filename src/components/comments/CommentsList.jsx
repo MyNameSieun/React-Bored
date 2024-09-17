@@ -1,10 +1,11 @@
-import { deleteComment, fetchComments, updateComment } from 'api/comments';
+import { deleteComment, updateComment } from 'api/comments';
 import { useState } from 'react';
 import CommentReply from './CommentReply';
 import { useAuth } from 'context/AuthContext';
 import dayjs from 'dayjs';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { QUERY_KEYS } from 'components/hooks/query/key';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { QUERY_KEYS } from 'components/hooks/query/keys.constant';
+import { useCommentsQuery } from 'components/hooks/query/useTodosQuery';
 
 const CommentsList = ({ id }) => {
   const [editMode, setEditMode] = useState(null);
@@ -59,20 +60,7 @@ const CommentsList = ({ id }) => {
   };
 
   // 댓글 조회
-  const {
-    data: comments = [],
-    isLoading,
-    error
-  } = useQuery({
-    queryKey: [QUERY_KEYS.COMMENTS, id],
-    queryFn: () => fetchComments(id),
-    onSuccess: (data) => {
-      console.log('데이터가 성공적으로 가져와졌습니다:', data);
-    },
-    onError: (error) => {
-      console.error('댓글을 불러오는 중 오류가 발생했습니다:', error);
-    }
-  });
+  const { data: comments = [], isLoading, error } = useCommentsQuery(id);
 
   if (isLoading) {
     return <p>로딩중...</p>;
