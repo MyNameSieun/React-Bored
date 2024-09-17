@@ -1,22 +1,33 @@
-import { useProfileQuery } from 'components/hooks/query/useTodosQuery';
-import { createContext, useContext } from 'react';
+import { getProfile } from 'api/auth';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const { data: user, isLoading, error } = useProfileQuery();
-
-  if (isLoading) {
-    return <p>로딩중...</p>;
-  }
-
-  if (error) {
-    return <p>에러 발생 {error.data}</p>;
-  }
-
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const isSignIn = !!user; // 로그인 상태 확인
 
-  return <AuthContext.Provider value={{ user, isSignIn }}>{children}</AuthContext.Provider>;
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await getProfile();
+        setUser(response.member);
+      } catch (error) {
+        setUser(null); // 인증 실패 시 사용자 정보 초기화
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return <AuthContext.Provider value={{ user, setUser, isSignIn }}>{children}</AuthContext.Provider>;
 };
 
 // export default AuthContext;

@@ -46,13 +46,10 @@ export const useRepliesQuery = (commentId) => {
 export const useProfileQuery = () => {
   return useQuery({
     queryKey: ['profile'],
-    queryFn: getProfile,
-    select: (data) => data.member,
-    onError: (error) => {
-      console.error('Error fetching profile:', error);
-    }
+    queryFn: getProfile
   });
 };
+
 // 타 사용자 프로필 조회
 export const useMemberProfileQuery = (id) => {
   return useQuery({
