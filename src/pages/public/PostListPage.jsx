@@ -1,11 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
-import { fetchPosts } from 'api/posts';
-import { QUERY_KEYS } from 'components/hooks/query/key';
+import { usePostsQuery } from 'components/hooks/query/useTodosQuery';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { sortByDate } from 'utils/sortUtils';
 
 const PostListPage = () => {
   const [sortOrder, setSortOrder] = useState('desc');
@@ -24,22 +21,8 @@ const PostListPage = () => {
     setSortOrder(newSortOrder);
   };
 
-  const {
-    data: posts = [],
-    isLoading,
-    error
-  } = useQuery({
-    queryKey: [QUERY_KEYS.POST, sortOrder],
-    queryFn: async () => {
-      const data = await fetchPosts();
-      return sortByDate(data, sortOrder); // 데이터를 받아온 후 정렬
-    },
-
-    onError: (error) => {
-      console.error(error);
-      alert(error.response.data);
-    }
-  });
+  // 게시물 로드
+  const { data: posts = [], isLoading, error } = usePostsQuery(sortOrder);
 
   if (isLoading) {
     return <p>로딩중...</p>;

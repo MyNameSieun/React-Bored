@@ -46,7 +46,8 @@ export const logout = async () => {
 
 // 프로필 조회
 export const getProfile = async () => {
-  return await authAxios.get(`/profile`);
+  const response = await authAxios.get(`/profile`);
+  return response.data;
 };
 
 // 프로필 닉네임 변경

@@ -1,59 +1,65 @@
-import { getProfile, updateNickname } from 'api/auth';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { updateNickname } from 'api/auth';
+import { QUERY_KEYS } from 'components/hooks/query/keys.constant';
+import { useProfileQuery } from 'components/hooks/query/useTodosQuery';
 import { useAuth } from 'context/AuthContext';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const MyPage = () => {
   const { user, setUser } = useAuth();
-  const [userPosts, setUserPosts] = useState([]);
   const [newNickname, setNewNickname] = useState('');
   const [isEditingNickname, setIsEditingNickname] = useState(false);
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const response = await getProfile();
-        setUser(response.data.member); // 사용자 상태 업데이트
-        setUserPosts(response.data.posts); // 게시글 상태 업데이트
-      } catch (error) {
-        console.error(error);
-        setUser(null); // 오류 발생 시 사용자 상태를 null로 설정
-      }
-    };
-    loadUser();
-  }, [setUser]);
-
-  const handleNicknameChange = async (e) => {
-    e.preventDefault();
-    try {
-      await updateNickname(newNickname);
+  // 닉네임 변경
+  const nicknameChangeMutation = useMutation({
+    mutationFn: updateNickname,
+    onSuccess: () => {
       setUser((prevUser) => ({
         ...prevUser,
         nickname: newNickname
       }));
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PROFILE] });
       setNewNickname('');
       setIsEditingNickname(false);
       alert('닉네임이 성공적으로 변경되었습니다!');
-    } catch (error) {
+    },
+    onError: (error) => {
       console.error('닉네임 변경 중 오류 발생:', error);
       alert('닉네임 변경 중 문제가 발생했습니다. 다시 시도해 주세요.');
     }
+  });
+
+  const handleNicknameChange = async (e) => {
+    e.preventDefault();
+
+    nicknameChangeMutation.mutate(newNickname);
   };
 
-  const handleChangeNicknameClick = () => {
-    setIsEditingNickname(true);
-  };
+  // 프로필 로드
+  const { data, isLoading, error } = useProfileQuery(setUser);
+
+  if (isLoading) {
+    return <p>로딩중...</p>;
+  }
+
+  if (error) {
+    return <p>에러 발생 {error.data}</p>;
+  }
+
+  const { member, posts } = data;
 
   return (
     <div>
-      <h1>{user.nickname}'s Profile</h1>
+      <h1>{member.nickname}'s Profile</h1>
       <ul>
-        <li>이름: {user.name}</li>
-        <li>이메일: {user.email}</li>
-        <li>닉네임: {user.nickname}</li>
+        <li>이름: {member.name}</li>
+        <li>이메일: {member.email}</li>
+        <li>닉네임: {member.nickname}</li>
         <div>
           {isEditingNickname ? (
             <form onSubmit={handleNicknameChange}>
@@ -70,18 +76,18 @@ const MyPage = () => {
               </button>
             </form>
           ) : (
-            <button onClick={handleChangeNicknameClick}>닉네임 변경</button>
+            <button onClick={() => setIsEditingNickname(true)}>닉네임 변경</button>
           )}
         </div>
       </ul>
       <section>
         <h2>내가 작성한 글 보기</h2>
-        {userPosts.length > 0 ? (
+        {posts.length > 0 ? (
           <StPostList>
-            {userPosts.map((userPost) => (
-              <li key={userPost.id} onClick={() => navigate(`/posts/${userPost.id}`)}>
-                <p>제목: {userPost.title}</p>
-                <p>작성일: {userPost.createdAt}</p>
+            {posts.map((post) => (
+              <li key={post.id} onClick={() => navigate(`/posts/${post.id}`)}>
+                <p>제목: {post.title}</p>
+                <p>작성일: {post.createdAt}</p>
                 <hr />
               </li>
             ))}

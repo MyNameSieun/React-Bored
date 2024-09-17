@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createPost } from 'api/posts';
-import { QUERY_KEYS } from 'components/hooks/query/key';
+import { QUERY_KEYS } from 'components/hooks/query/keys.constant';
 import TextEditor from 'components/TextEditor';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';

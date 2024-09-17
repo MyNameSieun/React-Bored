@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createReply } from 'api/comments';
-import { QUERY_KEYS } from 'components/hooks/query/key';
+import { QUERY_KEYS } from 'components/hooks/query/keys.constant';
 import { useState } from 'react';
 
 const CommentsReplyForm = ({ commentId }) => {

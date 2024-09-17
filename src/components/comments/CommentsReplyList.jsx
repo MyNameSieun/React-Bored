@@ -1,17 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
-import { fetchReplies } from 'api/comments';
-import { QUERY_KEYS } from 'components/hooks/query/key';
+import { useRepliesQuery } from 'components/hooks/query/useTodosQuery';
 
 const CommentsReplyList = ({ commentId }) => {
   // 답글 로드
-  const {
-    data: replies = [],
-    isLoading,
-    error
-  } = useQuery({
-    queryKey: [QUERY_KEYS.REPLIES, commentId],
-    queryFn: () => fetchReplies(commentId)
-  });
+  const { data: replies = [], isLoading, error } = useRepliesQuery(commentId);
 
   if (isLoading) {
     return <p>로딩중...</p>;
